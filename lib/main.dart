@@ -1,36 +1,42 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyCounterApp());
+  runApp(MyApp());
 }
 
-class MyCounterApp extends StatefulWidget {
-  const MyCounterApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  State<MyCounterApp> createState() => _MyCounterAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyCounterAppState extends State<MyCounterApp> {
-  int counter = 0;
-
+class _MyAppState extends State<MyApp> {
+  final TextEditingController _namecontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Counter App',
+      debugShowCheckedModeBanner: false,
+      title: 'Using controllers',
       home: Scaffold(
-        appBar: AppBar(title: Text('Counter App')),
-        body: Center(
+        appBar: AppBar(title: const Text('Using controllers')),
+        body: Padding(
+          padding: EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Text('Count: $counter'),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    counter++;
-                  });
-                },
-                child: const Text('Increment'),
+              TextField(
+                controller: _namecontroller,
+                decoration: const InputDecoration(labelText: 'Enter your Name'),
               ),
+              const SizedBox(height: 20),
+              Builder(
+                builder: (context) {
+                  return ElevatedButton(onPressed: (){
+                    final name=_namecontroller.text;
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Hello, $name")));
+                  },child: const Text('Show greeting'),);
+                }
+              )
             ],
           ),
         ),
