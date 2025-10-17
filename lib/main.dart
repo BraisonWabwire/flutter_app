@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
-  
+  runApp(MyCounterApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  
+class MyCounterApp extends StatefulWidget {
+  const MyCounterApp({super.key});
+  @override
+  State<MyCounterApp> createState() => _MyCounterAppState();
+}
+
+class _MyCounterAppState extends State<MyCounterApp> {
+  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Stateless widgest',
+      title: 'Counter App',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter Stateless widgets'),
-        ),
-        body: Column(
-          children: [
-            const Text('This is a simple stateless widget example.'),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('Press Me'),
-            ),
-          ],
+        appBar: AppBar(title: Text('Counter App')),
+        body: Center(
+          child: Column(
+            children: [
+              Text('Count: $counter'),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    counter++;
+                  });
+                },
+                child: const Text('Increment'),
+              ),
+            ],
+          ),
         ),
       ),
     );
