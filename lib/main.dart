@@ -1,45 +1,49 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
 
-class _MyAppState extends State<MyApp> {
-  final TextEditingController _namecontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Using controllers',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Using controllers')),
-        body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _namecontroller,
-                decoration: const InputDecoration(labelText: 'Enter your Name'),
-              ),
-              const SizedBox(height: 20),
-              Builder(
-                builder: (context) {
-                  return ElevatedButton(onPressed: (){
-                    final name=_namecontroller.text;
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Hello, $name")));
-                  },child: const Text('Show greeting'),);
-                }
-              )
-            ],
-          ),
-        ),
+      debugShowCheckedModeBanner: false, 
+      home: _counterScreen()
+    );
+  }
+
+}
+  
+
+@override
+class _counterScreen extends StatefulWidget {
+  @override
+  State<_counterScreen> createState() => _counterScreenState();
+}
+
+class _counterScreenState extends State<_counterScreen> {
+  int counter = 0;
+
+  void increment() {
+    setState(() {
+      counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Counter App')),
+      body: Center(
+        child: Text('Counter Value: $counter', style: TextStyle(fontSize: 24)),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: increment,
+        child: Icon(Icons.add),
       ),
     );
   }
