@@ -1,77 +1,76 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false, // Remove the debug banner
-      theme: ThemeData(
-        primarySwatch: Colors.green, // Set the app's primary theme color to green
-      ),
-      title: 'StreamBuilder Example',
-      home: NumberStreamPage(),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class NumberStreamPage extends StatefulWidget {
-  @override
-  _NumberStreamPageState createState() => _NumberStreamPageState();
-}
+class _MyAppState extends State<MyApp> {
+  // Single subscription stream controller
+  StreamController<String> _streamController = StreamController<String>();
+  // Broadcast stream controller
+  late Stream<String> dataStream;
+  TextEditingController _textEditingController = TextEditingController();
 
-class _NumberStreamPageState extends State<NumberStreamPage> {
-  late StreamController<int> _numberStreamController;
 
   @override
   void initState() {
+    dataStream = _streamController.stream.asBroadcastStream();
     super.initState();
-
-    // Create a stream controller and add numbers to the stream.
-    _numberStreamController = StreamController<int>();
-    _startAddingNumbers(); // Start adding numbers to the stream.
-  }
-
-  void _startAddingNumbers() async {
-    for (int i = 0; i < 10; i++) {
-      await Future.delayed(Duration(seconds: 2)); // Delay for 2 seconds.
-      _numberStreamController.sink.add(i); // Add the number to the stream.
-    }
-  }
-
-  @override
-  void dispose() {
-    _numberStreamController.close(); // Close the stream when disposing.
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('StreamBuilder Example'),
-      ),
-      body: Center(
-        child: StreamBuilder<int>(
-          stream: _numberStreamController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator(); // Display a loading indicator when waiting for data.
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}'); // Display an error message if an error occurs.
-            } else if (!snapshot.hasData) {
-              return Text('No data available'); // Display a message when no data is available.
-            } else {
-              return Text(
-                'Latest Number: ${snapshot.data}',
-                style: TextStyle(fontSize: 24),
-              ); // Display the latest number when data is available.
-            }
-          },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(title: const Text('My App')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StreamBuilder<String>(
+                stream: dataStream,
+                builder: (context, asyncSnapshot) {
+                  if (asyncSnapshot.hasData) {
+                    return Text(asyncSnapshot.data!);
+                  } else {
+                    return const Text("No data");
+                  }
+                },
+              ),
+              StreamBuilder<String>(
+                stream: dataStream,
+                builder: (context, asyncSnapshot) {
+                  if (asyncSnapshot.hasData) {
+                    return Text(asyncSnapshot.data!);
+                  } else {
+                    return const Text("No data");
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: 200,
+                child: TextField(controller: _textEditingController),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  _streamController.add(_textEditingController.text);
+                },
+                child: Text("Done"),
+              ),
+            ],
+          ),
         ),
       ),
     );
