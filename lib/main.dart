@@ -1,7 +1,6 @@
-// Stack navigation
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/homepage.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_app/DialogExample.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Drawer navigation Demo',
-      home: const Homepage(),
+      home: Dialogexample(),
     );
   }
 }
