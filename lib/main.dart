@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Stack Navigation Demo',
+      title: 'Drawer navigation Demo',
       home: Homepage(),
      
     );
