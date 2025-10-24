@@ -14,6 +14,9 @@ class Homepage extends StatelessWidget {
         appBar: AppBar(title: const Text("Tab Navigation Demo")),
         body: const TabBarView(children: [DetailsPage(), Settings()]),
         bottomNavigationBar: const TabBar(
+          labelColor: Colors.blue,
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: Colors.blue,
           tabs: [
             Tab(icon: Icon(Icons.info), text: 'Info'),
             Tab(icon: Icon(Icons.settings), text: 'Settings'),
