@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_app/DialogExample.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -12,7 +10,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Dialogexample(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontSize: 20, color: Colors.black),
+          titleLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        ),
+      ),
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Blue Themed App')),
+        body: Center(
+          child: Column(
+            children: [
+              ElevatedButton(onPressed: () {}, child: const Text('Press Me')),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
