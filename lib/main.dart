@@ -1,7 +1,9 @@
+// Reusable custom widget
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widgets/app_buttons.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -10,23 +12,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontSize: 20, color: Colors.black),
-          titleLarge: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
-          ),
-        ),
-      ),
+      title: 'Custom Button',
       home: Scaffold(
-        appBar: AppBar(title: const Text('Blue Themed App')),
+        appBar: AppBar(title: const Text("Test Custom Button")),
         body: Center(
-          child: Column(
+          child: Row(
             children: [
-              ElevatedButton(onPressed: () {}, child: const Text('Press Me')),
+              CustomButton(
+                backgroundColor: Colors.black,
+                borderColor: Colors.black,
+                textColor: Colors.white,
+                text: "1",
+                size: 40,
+              ),
+              SizedBox(width: 10),
+              CustomButton(
+                backgroundColor: Colors.black,
+                borderColor: Colors.black,
+                textColor: Colors.white,
+                isIcon: true,
+                icon: Icons.settings,
+                size: 40,
+              ),
             ],
           ),
         ),
