@@ -1,38 +1,34 @@
-// Reusable custom widget
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widgets/app_buttons.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int counter = 0;
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Custom Button',
       home: Scaffold(
-        appBar: AppBar(title: const Text("Test Custom Button")),
+        appBar: AppBar(title: const Text("Counter App")),
         body: Center(
-          child: Row(
+          child: Column(
             children: [
-              CustomButton(
-                backgroundColor: Colors.black,
-                borderColor: Colors.black,
-                textColor: Colors.white,
-                text: "1",
-                size: 40,
-              ),
-              SizedBox(width: 10),
-              CustomButton(
-                backgroundColor: Colors.black,
-                borderColor: Colors.black,
-                textColor: Colors.white,
-                isIcon: true,
-                icon: Icons.settings,
-                size: 40,
+              Text("Counter: $counter"),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    counter++;
+                  });
+                },
+                child: const Text('Increment Counter'),
               ),
             ],
           ),
