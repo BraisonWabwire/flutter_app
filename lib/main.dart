@@ -1,142 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:flutter_app/pages/contacts.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-      theme: ThemeData(primaryColor: Colors.blue),
-      routes: {'/new-contact': (context) => const NewContactView()},
-    );
-  }
-}
-
+// A class model defining the data
 class Contact {
-  final String id;
-  final String name;
+  String name;
+  String phoneNumber;
 
-  Contact({required this.name}) : id = const Uuid().v4();
+  Contact({required this.name, required this.phoneNumber});
 }
 
-class ContactBook extends ValueNotifier<List<Contact>> {
-  ContactBook._sharedInstance() : super([]);
-  static final ContactBook _shared = ContactBook._sharedInstance();
-  factory ContactBook() => _shared;
+// A global notifier that stores the latest value
+final contactNotifier = ValueNotifier<Contact?>(null);
 
-  int get length => value.length;
-
-  void add({required Contact contact}) {
-    value.add(contact);
-    notifyListeners();
-  }
-
-  void remove({required Contact contact}) {
-    final contacts = value;
-    value.remove(contact);
-    if (contacts.contains(contact)) {
-      contacts.remove(contact);
-      notifyListeners();
-    }
-  }
-
-  Contact? contact({required int atIndex}) =>
-      value.length > atIndex ? value[atIndex] : null;
-}
-
+// input page
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home Page"),
-        backgroundColor: Colors.blue,
-      ),
-      body: ValueListenableBuilder(
-        valueListenable: ContactBook(),
-        builder: (context, value, child) {
-          final contacts = value as List<Contact>;
-          return ListView.builder(
-            itemCount: contacts.length,
-            itemBuilder: (context, index) {
-              final contact = contacts[index];
-              return Dismissible(
-                onDismissed: (direction) {
-                  ContactBook().remove(contact: contact);
-                },
-                key: ValueKey(contact.id),
-                child: Material(
-                  color: Colors.white,
-                  elevation: 6.0,
-                  child: ListTile(title: Text(contact.name)),
+      appBar: AppBar(title: Text('Add Contact')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).pushNamed('/new-contact');
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class NewContactView extends StatefulWidget {
-  const NewContactView({super.key});
-
-  @override
-  State<NewContactView> createState() => _NewContactViewState();
-}
-
-class _NewContactViewState extends State<NewContactView> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    _controller = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Add new contact")),
-      body: Column(
-        children: [
-          TextField(
-            controller: _controller,
-            decoration: const InputDecoration(
-              hintText: "Enter a new contact name here...",
+              ),
             ),
-          ),
-          TextButton(
-            onPressed: () {
-              final contact = Contact(name: _controller.text);
-              ContactBook().add(contact: contact);
-              Navigator.of(context).pop;
-            },
-            child: Text("Add contact"),
-          ),
-        ],
+            TextField(
+              controller: _phoneNumberController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                contactNotifier.value = Contact(
+                  name: _nameController.text,
+                  phoneNumber: _phoneNumberController.text,
+                );
+                Navigator.of(context).push(MaterialPageRoute(builder: (_)=> const ContactsPage()));
+              },
+              child: const Text("Save & view a contact"),
+            ),
+          ],
+        ),
       ),
     );
   }
