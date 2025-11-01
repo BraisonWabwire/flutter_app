@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(
@@ -6,9 +7,26 @@ void main() {
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: ApiProvider(api: Api(), child: const HomePage()),
     ),
   );
+}
+
+class ApiProvider extends InheritedWidget {
+  final Api api;
+  final String uuid;
+
+  ApiProvider({super.key, required super.child, required this.api})
+    : uuid = const Uuid().v4();
+
+  @override
+  bool updateShouldNotify(covariant ApiProvider oldWidget) {
+    return uuid != oldWidget.uuid;
+  }
+
+  static ApiProvider of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ApiProvider>()!;
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -19,20 +37,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String title = 'Tap the screen';
+  ValueKey _textkey = const ValueKey<String?>(null);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(ApiProvider.of(context).api.dataAndTime ?? ""),
+      ),
       body: GestureDetector(
-        onTap: () {
-          setState(() {
-            title = DateTime.now().toIso8601String();
+        onTap: () async {
+          final api = ApiProvider.of(context);
+          final dateAndTime = await api.getDateAndTime();
+          setState(() async {
+            _textkey = ValueKey(dateAndTime);
           });
         },
-        child: Container(color: Colors.white),
+        child: SizedBox.expand(child: Container(color: Colors.white,
+        child: DateTimeWidget(key: _textkey,),
+        
+        )),
       ),
     );
+  }
+}
+
+class DateTimeWidget extends StatelessWidget {
+  const DateTimeWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final api = ApiProvider.of(context).api;
+    return Text(api.dataAndTime ?? "Tap screen to fetch date and time");
+  }
+}
+
+class Api {
+  String? dataAndTime;
+
+  Future<String> getDateAndTime() {
+    return Future.delayed(
+      const Duration(seconds: 1),
+      () => DateTime.now().toIso8601String(),
+    ).then((value) {
+      dataAndTime = value;
+      return value;
+    });
   }
 }
