@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/main.dart';
+import 'package:flutter_app/pages/homescreen.dart';
 
 class ContactsPage extends StatelessWidget {
   const ContactsPage({super.key});
