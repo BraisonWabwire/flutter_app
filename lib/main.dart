@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/homescreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      debugShowCheckedModeBanner: false,
+      home: const HomePage(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String title = 'Tap the screen';
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Value Notifier Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: HomePage(),
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: GestureDetector(
+        onTap: () {
+          setState(() {
+            title = DateTime.now().toIso8601String();
+          });
+        },
+        child: Container(color: Colors.white),
+      ),
     );
   }
 }
