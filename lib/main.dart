@@ -47,9 +47,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: GestureDetector(
         onTap: () async {
-          final api = ApiProvider.of(context);
+          final api = ApiProvider.of(context).api;
           final dateAndTime = await api.getDateAndTime();
-          setState(() async {
+          setState(() {
             _textkey = ValueKey(dateAndTime);
           });
         },
