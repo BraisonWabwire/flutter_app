@@ -1,87 +1,92 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 void main() {
-  runApp(
-    MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      debugShowCheckedModeBanner: false,
-      home: ApiProvider(api: Api(), child: const HomePage()),
-    ),
-  );
+  runApp(MyApp());
 }
 
-class ApiProvider extends InheritedWidget {
-  final Api api;
-  final String uuid;
-
-  ApiProvider({super.key, required super.child, required this.api})
-    : uuid = const Uuid().v4();
-
-  @override
-  bool updateShouldNotify(covariant ApiProvider oldWidget) {
-    return uuid != oldWidget.uuid;
-  }
-
-  static ApiProvider of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ApiProvider>()!;
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  ValueKey _textkey = const ValueKey<String?>(null);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(ApiProvider.of(context).api.dataAndTime ?? ""),
-      ),
-      body: GestureDetector(
-        onTap: () async {
-          final api = ApiProvider.of(context).api;
-          final dateAndTime = await api.getDateAndTime();
-          setState(() {
-            _textkey = ValueKey(dateAndTime);
-          });
-        },
-        child: SizedBox.expand(child: Container(color: Colors.white,
-        child: DateTimeWidget(key: _textkey,),
-        
-        )),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Homepage(),
     );
   }
 }
 
-class DateTimeWidget extends StatelessWidget {
-  const DateTimeWidget({super.key});
+class Homepage extends StatefulWidget {
+  const Homepage({super.key});
 
   @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  @override
   Widget build(BuildContext context) {
-    final api = ApiProvider.of(context).api;
-    return Text(api.dataAndTime ?? "Tap screen to fetch date and time");
+    return Scaffold(
+      appBar: AppBar(title: const Text("Flutter Inherited Models")),
+    );
   }
 }
 
-class Api {
-  String? dataAndTime;
+enum AvailableColors { one, two }
 
-  Future<String> getDateAndTime() {
-    return Future.delayed(
-      const Duration(seconds: 1),
-      () => DateTime.now().toIso8601String(),
-    ).then((value) {
-      dataAndTime = value;
-      return value;
-    });
+class AvailableColorsWidget extends InheritedModel<AvailableColors> {
+  final AvailableColors color1;
+  final AvailableColors color2;
+
+  const AvailableColorsWidget({
+    Key? key,
+    required this.color1,
+    required this.color2,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  static AvailableColorsWidget of(
+    BuildContext context,
+    AvailableColors aspect,
+  ) {
+    return InheritedModel.inheritFrom<AvailableColorsWidget>(
+      context,
+      aspect: aspect,
+    )!;
   }
+
+  @override
+  bool updateShouldNotify(covariant AvailableColorsWidget oldWidget) {
+    return color1 != oldWidget || color2 != oldWidget.color2;
+  }
+
+  @override
+  bool updateShouldNotifyDependent(
+    covariant InheritedModel<AvailableColors> oldWidget,
+    Set<AvailableColors> dependencies){
+
+      if(dependencies.contains(AvailableColors.one))
+
+    }
+}
+
+// Array of colors
+final colors = {
+  Colors.blue,
+  Colors.red,
+  Colors.yellow,
+  Colors.orange,
+  Colors.purple,
+  Colors.cyan,
+  Colors.brown,
+  Colors.amber,
+  Colors.deepPurple,
+};
+
+extension RandomElement<T> on Iterable<T> {
+  T getRandomElement() => elementAt(Random().nextInt(length));
 }
