@@ -1,92 +1,121 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+
+enum ThemeAspect { color, fontsize }
+
+class ThemeModel extends InheritedModel<ThemeAspect> {
+  final Color color;
+  final double fontsize;
+
+  const ThemeModel({
+    required this.color,
+    required this.fontsize,
+    required Widget child,
+  }) : super(child: child);
+
+  // Static helper to get the model
+  static ThemeModel? of(BuildContext context, ThemeAspect aspect) {
+    return InheritedModel.inheritFrom<ThemeModel>(context, aspect: aspect);
+  }
+
+  @override
+  bool updateShouldNotify(ThemeModel oldWidget) {
+    return color != oldWidget.color || fontsize != oldWidget.fontsize;
+  }
+
+  @override
+  bool updateShouldNotifyDependent(
+    ThemeModel oldWidget,
+    Set<ThemeAspect> dependencies,
+  ) {
+    if (dependencies.contains(ThemeAspect.color) && color != oldWidget.color) {
+      return true;
+    }
+    if (dependencies.contains(ThemeAspect.fontsize) &&
+        fontsize != oldWidget.fontsize) {
+      return true;
+    }
+    return false;
+  }
+}
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Color _color = Colors.blue;
+  double _fontsize = 20;
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: Homepage(),
+    return ThemeModel(
+      color: _color,
+      fontsize: _fontsize,
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(title: Text("Inherited Model Demo")),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ColorWidget(),
+              FontSizeWidget(),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _color = _color == Colors.blue ? Colors.red : Colors.blue;
+                  });
+                },
+                child: const Text("Change color"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _fontsize = _fontsize == 20 ? 30 : 20;
+                  });
+                },
+                child: const Text("Change font size"),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+// Widgets depending on the fontsize
+class ColorWidget extends StatelessWidget {
+  const ColorWidget({super.key});
 
-  @override
-  State<Homepage> createState() => _HomepageState();
-}
-
-class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Flutter Inherited Models")),
+    final model = ThemeModel.of(context, ThemeAspect.color);
+    print('ColorWidget Rebuild');
+    return Text(
+      'This depends on COLOR',
+      style: TextStyle(color: model?.color, fontSize: 20),
     );
   }
 }
 
-enum AvailableColors { one, two }
-
-class AvailableColorsWidget extends InheritedModel<AvailableColors> {
-  final AvailableColors color1;
-  final AvailableColors color2;
-
-  const AvailableColorsWidget({
-    Key? key,
-    required this.color1,
-    required this.color2,
-    required Widget child,
-  }) : super(key: key, child: child);
-
-  static AvailableColorsWidget of(
-    BuildContext context,
-    AvailableColors aspect,
-  ) {
-    return InheritedModel.inheritFrom<AvailableColorsWidget>(
-      context,
-      aspect: aspect,
-    )!;
-  }
+class FontSizeWidget extends StatelessWidget {
+  const FontSizeWidget({super.key});
 
   @override
-  bool updateShouldNotify(covariant AvailableColorsWidget oldWidget) {
-    return color1 != oldWidget || color2 != oldWidget.color2;
+  Widget build(BuildContext context) {
+    final model = ThemeModel.of(context, ThemeAspect.color);
+    print('FontSizeWidget Rebuild');
+    return Text(
+      'This depends on COLOR',
+      style: TextStyle(fontSize: model?.fontsize, color: Colors.black),
+    );
   }
-
-  @override
-  bool updateShouldNotifyDependent(
-    covariant InheritedModel<AvailableColors> oldWidget,
-    Set<AvailableColors> dependencies){
-
-      if(dependencies.contains(AvailableColors.one))
-
-    }
-}
-
-// Array of colors
-final colors = {
-  Colors.blue,
-  Colors.red,
-  Colors.yellow,
-  Colors.orange,
-  Colors.purple,
-  Colors.cyan,
-  Colors.brown,
-  Colors.amber,
-  Colors.deepPurple,
-};
-
-extension RandomElement<T> on Iterable<T> {
-  T getRandomElement() => elementAt(Random().nextInt(length));
 }
