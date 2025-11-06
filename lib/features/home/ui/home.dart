@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/features/home/bloc/home_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -9,12 +10,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final HomeBloc homeBloc = HomeBloc();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Braisons Grocery App"),
-      ),
+    return BlocConsumer<HomeBloc, HomeState>(
+      bloc: homeBloc,
+      // listenWhen: (previous, current) {},
+      // buildWhen: (previous, current) {},
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("Braisons Grocery App"),
+            actions: [IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.shopping_bag)),
+            ],
+          ),
+        );
+      },
     );
   }
 }
