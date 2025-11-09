@@ -15,6 +15,12 @@ class _HomeState extends State<Home> {
   final HomeBloc homeBloc = HomeBloc();
 
   @override
+  void initState() {
+    homeBloc.add(HomeInitialEvent());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
       bloc: homeBloc,

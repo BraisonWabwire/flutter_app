@@ -3,12 +3,12 @@ part of 'home_bloc.dart';
 @immutable
 sealed class HomeEvent {}
 
-class HomeProductWishListButtonClickedEvent extends HomeEvent{}
+class HomeInitialEvent extends HomeEvent {}
 
-class HomeProductCartButtonClickedEvent extends HomeEvent{}
+class HomeProductWishListButtonClickedEvent extends HomeEvent {}
 
-class HomeWishListButtonNavigateEvent extends HomeEvent{}
+class HomeProductCartButtonClickedEvent extends HomeEvent {}
 
-class HomeCartButtonNavigateEvent extends HomeEvent{}
+class HomeWishListButtonNavigateEvent extends HomeEvent {}
 
-
+class HomeCartButtonNavigateEvent extends HomeEvent {}
