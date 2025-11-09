@@ -12,5 +12,5 @@ class HomeInitial extends HomeState {}
 class HomeLoadingState extends HomeState{}
 class HomeLoadedSuccessState extends HomeState{}
 class HomeErrorState extends HomeState{}
-class HomeNavigateToWishListPageActioState extends HomeActionState{}
-class HomeNavigateToCartPageActioState extends HomeActionState{}
+class HomeNavigateToWishListPageActionState extends HomeActionState{}
+class HomeNavigateToCartPageActionState extends HomeActionState{} 

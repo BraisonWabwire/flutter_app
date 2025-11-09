@@ -25,8 +25,19 @@ class _HomeState extends State<Home> {
         return Scaffold(
           appBar: AppBar(
             title: Text("Braisons Grocery App"),
-            actions: [IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
-            IconButton(onPressed: () {}, icon: Icon(Icons.shopping_bag)),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  homeBloc.add(HomeWishListButtonNavigateEvent());
+                },
+                icon: Icon(Icons.favorite_border),
+              ),
+              IconButton(
+                onPressed: () {
+                  homeBloc.add(HomeCartButtonNavigateEvent());
+                },
+                icon: Icon(Icons.shopping_bag),
+              ),
             ],
           ),
         );
